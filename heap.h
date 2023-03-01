@@ -1,7 +1,10 @@
 #ifndef HEAP_H
 #define HEAP_H
+#include <string>
 #include <functional>
 #include <stdexcept>
+#include <vector>
+#include <iostream>
 
 template <typename T, typename PComparator = std::less<T> >
 class Heap
@@ -21,7 +24,9 @@ public:
   * @brief Destroy the Heap object
   * 
   */
-  ~Heap();
+  ~Heap(){
+
+  }
 
   /**
    * @brief Push an item to the heap
@@ -53,6 +58,8 @@ public:
    */
   bool empty() const;
 
+  void heapify(int idx); 
+
     /**
    * @brief Returns size of the heap
    * 
@@ -61,9 +68,9 @@ public:
 
 private:
   /// Add whatever helper functions and data members you need below
-
-
-
+  std::vector<T> items_; 
+  PComparator c_; 
+  int m_; 
 
 };
 
@@ -81,14 +88,17 @@ T const & Heap<T,PComparator>::top() const
     // ================================
     // throw the appropriate exception
     // ================================
-
+    throw std::underflow_error("empty heap"); 
 
   }
   // If we get here we know the heap has at least 1 item
   // Add code to return the top element
-
-
-
+  // std::cout << "BEFORE TOP VECTOR: ";
+  // for (size_t i = 0; i < items_.size(); i++){
+  //   std::cout << items_[i] << " ";
+  // }
+  // std::cout << "\n"; 
+  return items_[0]; 
 }
 
 
@@ -98,16 +108,86 @@ template <typename T, typename PComparator>
 void Heap<T,PComparator>::pop()
 {
   if(empty()){
-    // ================================
-    // throw the appropriate exception
-    // ================================
-
-
+    throw(std::underflow_error("empty heap")); 
   }
+  // std::cout << "BEFORE POP VECTOR: ";
+  // for (size_t i = 0; i < items_.size(); i++){
+  //   std::cout << items_[i] << " ";
+  // }
+  // std::cout << "\n"; 
+  items_[0] = items_.back(); 
+  items_.pop_back();
 
-
+  heapify(0);
 
 }
+
+
+template <typename T, typename PComparator>
+void Heap<T,PComparator>::heapify(int idx){
+
+  //if leaf node return
+  size_t tree_size = items_.size();
+  size_t initial_child = idx*m_ + 1; 
+  size_t next_child; 
+  size_t next_index; 
+  if (initial_child >= tree_size){
+    return; 
+  }
+  for (int i = 2; i <= m_; i++){
+    next_child = idx*m_ + i; 
+    if (next_child < tree_size){
+      if (c_(items_[next_child], items_[initial_child])){
+        initial_child = next_child;
+      }
+    }
+  }
+  T& smaller_child = items_[initial_child];
+  if (c_(smaller_child, items_[idx])){
+    //swap
+    std::swap(smaller_child, items_[idx]);
+    heapify(initial_child);
+  }
+
+}
+
+template <typename T, typename PComparator>
+bool Heap<T,PComparator>::empty() const{
+  if (items_.size() == 0){
+    return true;
+  }
+  return false;
+}
+
+template <typename T, typename PComparator>
+size_t Heap<T,PComparator>::size() const{
+  return items_.size();
+}
+
+template <typename T, typename PComparator>
+void Heap<T,PComparator>::push(const T& item){
+  items_.push_back(item);
+  size_t index = items_.size()-1;
+  while (index != 0){
+    size_t parent_index = (index-1)/m_;
+    T&current = items_[index];
+    T&parent = items_[parent_index]; 
+    if (c_(current, parent)){
+      std::swap(current, parent);
+      index = parent_index; 
+    }else{
+      break; 
+    }
+  }
+}
+
+template <typename T, typename Comparator>
+Heap<T,Comparator>::Heap(int m, Comparator c){
+  c_ = c; 
+  m_ = m;
+}
+
+
 
 
 

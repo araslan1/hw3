@@ -29,7 +29,7 @@ NotGate::NotGate(Wire* a, Wire*b, Wire* o) : Gate(2,o)
 
 Event* NotGate::update(uint64_t current_time)
 {
-	char state;
+	char state = '1';
   Event* e = nullptr;
 	for(auto w : m_inputs)
 	{

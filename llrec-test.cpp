@@ -4,6 +4,14 @@
 #include "llrec.h"
 using namespace std;
 
+
+
+struct IsEven
+{
+    bool operator()(int num) {
+        return (num % 2) == 0;
+    }
+};
 /**
  * Reads integers (separated by whitespace) from a file
  * into a linked list.
@@ -84,9 +92,9 @@ int main(int argc, char* argv[])
     Node* head = readList(argv[1]);
     cout << "Original list: ";
     print(head);
-
     // Test out your linked list code
-
+    llfilter(head, IsEven()); 
+    print(head); 
 
 
     

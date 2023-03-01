@@ -21,10 +21,9 @@ void Gate::wireInput(unsigned int id, Wire* in)
     }
 }
 
-NotGate::NotGate(Wire* a, Wire*b, Wire* o) : Gate(2,o)
+NotGate::NotGate(Wire* a, Wire*b) : Gate(1,b)
 {
 	wireInput(0, a);
-	wireInput(1, b); 
 }
 
 Event* NotGate::update(uint64_t current_time)
